@@ -15,5 +15,5 @@ public class ProductDto {
 
     private Double price;
 
-    private Category category;
+    private CategoryDto category;
 }
