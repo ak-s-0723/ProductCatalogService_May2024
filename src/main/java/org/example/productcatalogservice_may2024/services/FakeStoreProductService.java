@@ -7,9 +7,14 @@ import org.example.productcatalogservice_may2024.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -36,6 +41,19 @@ public class FakeStoreProductService implements IFakeStoreProductService {
         }
 
         return null;
+    }
+
+    public Product replaceProduct(Long productId, Product product) {
+        //create fakestoreproduct from product
+        FakeStoreProductDto fakeStoreProductDto = putForEntity("https://fakestoreapi.com/products/{id}",product,FakeStoreProductDto.class,productId).getBody();
+        return getProduct(fakeStoreProductDto);
+    }
+
+    private <T> ResponseEntity<T> putForEntity(String url, @Nullable Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
+        ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
+        return restTemplate.execute(url, HttpMethod.POST, requestCallback, responseExtractor, uriVariables);
     }
 
     @Override
