@@ -1,5 +1,6 @@
 package org.example.productcatalogservice_may2024.services;
 
+import org.example.productcatalogservice_may2024.clients.FakeStoreClient;
 import org.example.productcatalogservice_may2024.dtos.FakeStoreProductDto;
 import org.example.productcatalogservice_may2024.dtos.FakeStoreRatingDto;
 import org.example.productcatalogservice_may2024.models.Category;
@@ -27,6 +28,9 @@ public class FakeStoreProductService implements IFakeStoreProductService {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
+    @Autowired
+    private FakeStoreClient fakeStoreClient;
+
     @Override
     public List<Product> getAllProducts() {
         RestTemplate restTemplate = restTemplateBuilder.build();
@@ -43,16 +47,7 @@ public class FakeStoreProductService implements IFakeStoreProductService {
 
     @Override
     public Product getProductById(Long productId) {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        //FakeStoreProductDto fakeStoreProductDto = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class,productId).getBody();
-        //ResponseEntity<FakeStoreProductDto> responseEntity = restTemplate.getForEntity("https://fakestoreapi.com/products/{id}", FakeStoreProductDto.class,productId);
-        FakeStoreProductDto fakeStoreProductDto = requestForEntity(HttpMethod.GET,"https://fakestoreapi.com/products/{id}",null,FakeStoreProductDto.class,productId).getBody();
-
-        /*if(responseEntity.getStatusCode().equals(HttpStatusCode.valueOf(200))) {
-            return getProduct(responseEntity.getBody());
-        }*/
-
-        return getProduct(fakeStoreProductDto);
+        return getProduct(fakeStoreClient.getProduct(productId));
     }
 
     @Override
@@ -100,3 +95,4 @@ public class FakeStoreProductService implements IFakeStoreProductService {
         return fakeStoreProductDto;
     }
 }
+

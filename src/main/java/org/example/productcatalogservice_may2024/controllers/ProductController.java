@@ -46,7 +46,9 @@ public class ProductController {
             headers.add("called by", "anurag");
             return new ResponseEntity<>(body, headers, HttpStatus.OK);
         } catch(IllegalArgumentException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw ex;
+            //return handleExceptions(ex);
+            //return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -86,4 +88,6 @@ public class ProductController {
         productDto.setPrice(product.getPrice());
         return productDto;
     }
+
+
 }
