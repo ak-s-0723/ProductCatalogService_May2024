@@ -11,18 +11,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     IFakeStoreProductService iFakeStoreProductService;
 
-    @GetMapping("/products/{id}")
+    @GetMapping
+    public List<ProductDto> getAllProducts() {
+        List<ProductDto> results = new ArrayList<>();
+        List<Product> products = iFakeStoreProductService.getAllProducts();
+        for(Product product : products) {
+            results.add(getProductDto(product));
+        }
+
+        return results;
+    }
+
+    @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProduct(@PathVariable("id") Long productId) {
         try {
             if (productId <= 0) {
@@ -41,6 +53,26 @@ public class ProductController {
     @PostMapping
     public ProductDto createProduct(ProductDto productDto) {
     return null;
+    }
+
+
+    @PutMapping("/{id}")
+    public ProductDto replaceProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        Product product = getProduct(productDto);
+        Product newProduct = iFakeStoreProductService.replaceProduct(id,product);
+        return getProductDto(newProduct);
+    }
+
+    private Product getProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setImageUrl(productDto.getImageUrl());
+        product.setDescription(productDto.getDescription());
+        Category category = new Category();
+        category.setName(productDto.getCategory().getName());
+        product.setCategory(category);
+        return product;
     }
 
     private ProductDto getProductDto(Product product) {
