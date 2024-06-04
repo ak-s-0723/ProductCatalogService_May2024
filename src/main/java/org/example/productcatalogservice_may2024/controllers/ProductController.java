@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ProductController {
@@ -41,6 +38,26 @@ public class ProductController {
     @PostMapping
     public ProductDto createProduct(ProductDto productDto) {
     return null;
+    }
+
+    @PutMapping("/products/{id}")
+    public ProductDto replaceProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
+        Product product = getProduct(productDto);
+        Product product1 = iFakeStoreProductService.replaceProduct(id, product);
+        return getProductDto(product1);
+    }
+
+    private Product getProduct(ProductDto productDto) {
+        Product product = new Product();
+        product.setDescription(productDto.getDescription());
+        product.setName(product.getName());
+        product.setImageUrl(product.getImageUrl());
+        product.setPrice(product.getPrice());
+        Category category = new Category();
+        category.setName(productDto.getCategory().getName());
+        category.setDescription(productDto.getCategory().getDescription());
+        product.setCategory(category);
+        return product;
     }
 
     private ProductDto getProductDto(Product product) {

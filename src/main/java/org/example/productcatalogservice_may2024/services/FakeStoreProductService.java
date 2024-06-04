@@ -45,7 +45,8 @@ public class FakeStoreProductService implements IFakeStoreProductService {
 
     public Product replaceProduct(Long productId, Product product) {
         //create fakestoreproduct from product
-        FakeStoreProductDto fakeStoreProductDto = putForEntity("https://fakestoreapi.com/products/{id}",product,FakeStoreProductDto.class,productId).getBody();
+        FakeStoreProductDto fakeStoreProductDtoReq = getFakeStoreProductDto(product);
+        FakeStoreProductDto fakeStoreProductDto = putForEntity("https://fakestoreapi.com/products/{id}",fakeStoreProductDtoReq,FakeStoreProductDto.class,productId).getBody();
         return getProduct(fakeStoreProductDto);
     }
 
@@ -54,6 +55,16 @@ public class FakeStoreProductService implements IFakeStoreProductService {
         RequestCallback requestCallback = restTemplate.httpEntityCallback(request, responseType);
         ResponseExtractor<ResponseEntity<T>> responseExtractor = restTemplate.responseEntityExtractor(responseType);
         return restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor, uriVariables);
+    }
+
+    private FakeStoreProductDto getFakeStoreProductDto(Product product) {
+        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+        fakeStoreProductDto.setTitle(product.getName());
+        fakeStoreProductDto.setDescription(product.getDescription());
+        fakeStoreProductDto.setImage(product.getImageUrl());
+        fakeStoreProductDto.setPrice(product.getPrice());
+        fakeStoreProductDto.setCategory(product.getCategory().getName());
+        return fakeStoreProductDto;
     }
 
     @Override
