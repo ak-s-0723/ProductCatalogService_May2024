@@ -35,7 +35,7 @@ public class FakeStoreProductService implements IFakeStoreProductService {
     public List<Product> getAllProducts() {
         RestTemplate restTemplate = restTemplateBuilder.build();
         FakeStoreProductDto[] fakeStoreProductDtos =
-                restTemplate.getForEntity("https://fakestoreapi.com/products/",
+                restTemplate.getForEntity("http://fakestoreapi.com/products/",
                         FakeStoreProductDto[].class).getBody();
         List<Product> products = new ArrayList<>();
         for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
@@ -58,7 +58,7 @@ public class FakeStoreProductService implements IFakeStoreProductService {
     @Override
     public Product replaceProduct(Long id, Product product) {
         FakeStoreProductDto fakeStoreProductDto = getFakeStoreProductDto(product);
-        FakeStoreProductDto fakeStoreProductDtoResponse = requestForEntity(HttpMethod.PUT,"https://fakestoreapi.com/products/{id}",fakeStoreProductDto,FakeStoreProductDto.class,id).getBody();
+        FakeStoreProductDto fakeStoreProductDtoResponse = requestForEntity(HttpMethod.PUT,"http://fakestoreapi.com/products/{id}",fakeStoreProductDto,FakeStoreProductDto.class,id).getBody();
         return getProduct(fakeStoreProductDtoResponse);
     }
 
@@ -74,17 +74,18 @@ public class FakeStoreProductService implements IFakeStoreProductService {
         Product product = new Product();
         product.setId(fakeStoreProductDto.getId());
         product.setName(fakeStoreProductDto.getTitle());
-        Category category = new Category();
-        category.setName(fakeStoreProductDto.getCategory());
-        product.setCategory(category);
         product.setImageUrl(fakeStoreProductDto.getImage());
         product.setPrice(fakeStoreProductDto.getPrice());
         product.setDescription(fakeStoreProductDto.getDescription());
+        Category category = new Category();
+        category.setName(fakeStoreProductDto.getCategory());
+        product.setCategory(category);
         return product;
     }
 
     private FakeStoreProductDto getFakeStoreProductDto(Product product) {
         FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
+        fakeStoreProductDto.setId(product.getId());
         fakeStoreProductDto.setDescription(product.getDescription());
         fakeStoreProductDto.setPrice(product.getPrice());
         fakeStoreProductDto.setImage(product.getImageUrl());

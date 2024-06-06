@@ -67,13 +67,18 @@ public class ProductController {
 
     private Product getProduct(ProductDto productDto) {
         Product product = new Product();
+        product.setId(productDto.getId());
         product.setName(productDto.getName());
         product.setPrice(productDto.getPrice());
         product.setImageUrl(productDto.getImageUrl());
         product.setDescription(productDto.getDescription());
-        Category category = new Category();
-        category.setName(productDto.getCategory().getName());
-        product.setCategory(category);
+        if(productDto.getCategory() != null) {
+            Category category = new Category();
+            category.setName(productDto.getCategory().getName());
+            category.setId(productDto.getCategory().getId());
+            category.setDescription(productDto.getCategory().getDescription());
+            product.setCategory(category);
+        }
         return product;
     }
 
@@ -81,11 +86,16 @@ public class ProductController {
         ProductDto productDto = new ProductDto();
         productDto.setName(product.getName());
         productDto.setDescription(product.getDescription());
-        CategoryDto categoryDto = new CategoryDto();
-        categoryDto.setName(product.getCategory().getName());
-        productDto.setCategory(categoryDto);
         productDto.setImageUrl(product.getImageUrl());
         productDto.setPrice(product.getPrice());
+        productDto.setId(product.getId());
+        if(product.getCategory() != null) {
+            CategoryDto categoryDto = new CategoryDto();
+            categoryDto.setName(product.getCategory().getName());
+            categoryDto.setDescription(product.getCategory().getDescription());
+            categoryDto.setId(product.getCategory().getId());
+            productDto.setCategory(categoryDto);
+        }
         return productDto;
     }
 
