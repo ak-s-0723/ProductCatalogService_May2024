@@ -2,16 +2,12 @@ package org.example.productcatalogservice_may2024.services;
 
 import org.example.productcatalogservice_may2024.clients.FakeStoreClient;
 import org.example.productcatalogservice_may2024.dtos.FakeStoreProductDto;
-import org.example.productcatalogservice_may2024.dtos.FakeStoreRatingDto;
 import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
@@ -23,7 +19,7 @@ import java.util.List;
 
 
 @Service
-public class FakeStoreProductService implements IFakeStoreProductService {
+public class FakeStoreProductService implements IProductService {
 
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;

@@ -4,8 +4,7 @@ import org.example.productcatalogservice_may2024.dtos.CategoryDto;
 import org.example.productcatalogservice_may2024.dtos.ProductDto;
 import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
-import org.example.productcatalogservice_may2024.services.FakeStoreProductService;
-import org.example.productcatalogservice_may2024.services.IFakeStoreProductService;
+import org.example.productcatalogservice_may2024.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +20,12 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    IFakeStoreProductService iFakeStoreProductService;
+    IProductService iProductService;
 
     @GetMapping
     public List<ProductDto> getAllProducts() {
         List<ProductDto> results = new ArrayList<>();
-        List<Product> products = iFakeStoreProductService.getAllProducts();
+        List<Product> products = iProductService.getAllProducts();
         for(Product product : products) {
             results.add(getProductDto(product));
         }
@@ -40,7 +39,7 @@ public class ProductController {
             if (productId <= 0) {
                 throw new IllegalArgumentException("invalid productId");
             }
-            Product product = iFakeStoreProductService.getProductById(productId);
+            Product product = iProductService.getProductById(productId);
             ProductDto body = getProductDto(product);
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
             headers.add("called by", "anurag");
@@ -53,15 +52,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDto createProduct(ProductDto productDto) {
-    return null;
+    public ProductDto createProduct(@RequestBody ProductDto productDto) {
+       Product product = getProduct(productDto);
+       Product result = iProductService.createProduct(product);
+       return getProductDto(result);
     }
 
 
     @PutMapping("/{id}")
     public ProductDto replaceProduct(@PathVariable Long id, @RequestBody ProductDto productDto) {
         Product product = getProduct(productDto);
-        Product newProduct = iFakeStoreProductService.replaceProduct(id,product);
+        Product newProduct = iProductService.replaceProduct(id,product);
         return getProductDto(newProduct);
     }
 
