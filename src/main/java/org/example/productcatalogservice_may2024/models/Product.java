@@ -26,6 +26,3 @@ public class Product extends BaseModel {
 
     //private Boolean isPrime;
 }
-
-
-//product : category
