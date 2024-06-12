@@ -26,4 +26,30 @@ class CategoryRepoTest {
             System.out.println(p.getName());
        }
     }
+
+    //On fetchMode.join , same result as FetchMode.select
+    @Test
+    @Transactional
+    public void testingNPlusOne() {
+        List<Category> categories = categoryRepo.findAll();
+        for(Category c : categories) {
+            List<Product> products = c.getProductList();
+            if(!products.isEmpty()) {
+                System.out.println(products.get(0).getName());
+            }
+        }
+    }
+
+    //Exactly same number of queries as above
+    @Test
+    @Transactional
+    public void testingSomething() {
+        List<Category> categories = categoryRepo.findAll();
+        for(Category c : categories) {
+            List<Product> products = c.getProductList();
+            for(Product p : products) {
+                System.out.println(p.getName());
+            }
+        }
+    }
 }
