@@ -1,0 +1,53 @@
+int doSomething(int n) {  -> unit testing
+   return n*2;  --> return n*3;
+}
+
+void foo(int n) {  -> unit testing
+   sout((int)doSomething(n));
+}
+
+
+(2^32 - 1)/2
+
+
+TDD -> Test Driven Development (GOJEK, THOUGHWORKS)
+
+Unit Tests  based on requirements ->
+                             Development
+
+   public void testAdder(long num1,long num2) {
+      Adder adder = new Adder();
+      int res = adder.add(num1,num2);
+      assert(res == x);
+   }
+
+pros
+  - empathetic towards user and req
+  - negative and all corner cases will be handled
+
+cons
+   - redundant cycles
+   - time taking
+
+FAANG DON'T PREFER TDD
+SOURCE CODE -> UNIT TESTS
+
+code coverage -> Lines of source code covered by UTs/
+                               Total number of lines
+
+   public void print(String s) {
+     if(s == null) {     -
+         return;
+     }
+                         -
+     sout(s);            -
+   }
+
+   print("ANURAG");     70%
+   print(null);         100%
+
+  FLAKY TESTING  ->
+  BEHAVIOR CANNOT BE DETERMINED
+
+
+

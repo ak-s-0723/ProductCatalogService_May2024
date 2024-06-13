@@ -8,3 +8,9 @@ class 10
 https://docs.spring.io/spring-data/jpa/reference/repositories/query-keywords-reference.html
 https://www.baeldung.com/hibernate-lazy-eager-loading
 
+class 11
+https://hackernoon.com/3-ways-to-deal-with-hibernate-n1-problem
+https://dheerajgopinath.medium.com/the-issue-with-fetchmode-subselect-and-onetomany-mappings-in-hibernate-and-jpa-f79724068897
+https://itecnote.com/tecnote/hibernate-subselect-vs-batch-fetching/
+https://www.baeldung.com/hibernate-fetchmode
+

@@ -1,0 +1,36 @@
+FetchType        FetchMode          Result
+
+LAZY             SELECT             Asked For Products - Queries - 2 select queries
+                                    Not Asked For Products - Queries - 1 select query
+
+
+EAGER            SELECT             Asked For Products - Queries - 2 select queries
+                                    Not Asked For Products - Queries - 2 select queries
+
+
+
+LAZY             JOIN               Asked For Products - Queries - 1 join query
+                                    Not Asked For Products - Queries - 1 join query
+
+
+
+EAGER            JOIN               Asked For Products - Queries - 1 join query
+                                    Not Asked For Products - Queries - 1 join query
+
+
+
+LAZY             SUBSELECT           Asked For Products - Queries - 2 select queries
+                                     Not Asked For Products - Queries - 1 select query
+
+
+
+EAGER            SUBSELECT          Asked For Products - Queries - 2 select queries
+                                    Not Asked For Products - Queries - 2 select queries
+
+
+ 1 - when mode was select/sub-select, fetch-type is honoured
+
+ 2  - when fetch mode was join , it doesn't consider fetch-type anything
+
+
+ //select p.id from product where c.id in (select c from category where.........)
