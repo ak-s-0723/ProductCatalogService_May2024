@@ -1,5 +1,6 @@
 package org.example.productcatalogservice_may2024.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -15,13 +16,14 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Category extends BaseModel {
     private String name;
 
     private String description;
 
     @OneToMany(mappedBy = "category",fetch = FetchType.LAZY)
-    //@Fetch(FetchMode.SELECT)
+    @Fetch(FetchMode.SUBSELECT)
     //@BatchSize(size = 5)
     private List<Product> productList = new ArrayList<>();
 }

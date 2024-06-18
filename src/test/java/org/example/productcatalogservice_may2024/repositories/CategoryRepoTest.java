@@ -30,12 +30,12 @@ class CategoryRepoTest {
     @Test
     @Transactional
     public void testFetchModes() {
-        Category category = categoryRepo.findById(1L).get();
+        Category category = categoryRepo.findById(10L).get();
         System.out.println(category.getName());
-//        List<Product> productList = category.getProductList();
-//        for(Product p : productList) {
-//            System.out.println(p.getName());
-//        }
+        List<Product> productList = category.getProductList();
+        for(Product p : productList) {
+            System.out.println(p.getName());
+        }
     }
 
     @Test

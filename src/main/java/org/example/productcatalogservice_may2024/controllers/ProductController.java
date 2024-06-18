@@ -39,6 +39,7 @@ public class ProductController {
             if (productId <= 0) {
                 throw new IllegalArgumentException("invalid productId");
             }
+
             Product product = iProductService.getProductById(productId);
             ProductDto body = getProductDto(product);
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
