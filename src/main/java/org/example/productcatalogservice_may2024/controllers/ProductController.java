@@ -6,6 +6,7 @@ import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
 import org.example.productcatalogservice_may2024.services.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
+    //@Qualifier("productservicestub")
     IProductService iProductService;
 
     @GetMapping
@@ -100,6 +102,4 @@ public class ProductController {
         }
         return productDto;
     }
-
-
 }

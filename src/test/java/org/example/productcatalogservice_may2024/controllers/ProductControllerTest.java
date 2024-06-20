@@ -5,6 +5,8 @@ import org.example.productcatalogservice_may2024.models.Product;
 import org.example.productcatalogservice_may2024.services.IProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,6 +28,10 @@ class ProductControllerTest {
 
     @MockBean
     private IProductService productService;
+
+
+    @Captor
+    private ArgumentCaptor<Long> idCaptor;
 
     @DisplayName("returning product with id 1 successful")
     @Test
@@ -69,6 +75,20 @@ class ProductControllerTest {
         verify(productService,times(0)).getProductById(0L);
     }
 
+    @Test
+    public void Test_ProductServiceCalledWithCorrectParameters_RunsSuccessfully() {
+        //Arrange
+        Long id = 2L;
+        Product product = new Product();
+        product.setId(id);
+        product.setName("Iphone");
+        when(productService.getProductById(any(Long.class))).thenReturn(product);
 
+        //Act
+        productController.getProduct(id);
 
+        //Assert
+        verify(productService).getProductById(idCaptor.capture());
+        assertEquals(id,idCaptor.getValue());
+    }
 }
