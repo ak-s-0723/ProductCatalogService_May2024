@@ -1,12 +1,14 @@
 package org.example.productcatalogservice_may2024.repositories;
 
 import jakarta.transaction.Transactional;
+import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,6 +17,31 @@ class ProductRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Test
+    public void AddProductToAWSDatabase() {
+      Product product = new Product();
+      product.setId(1L);
+      product.setName("Iphone 15");
+      product.setDescription("Most Powerful Iphone ever");
+      product.setPrice(10000D);
+      Category category = new Category();
+      category.setId(1L);
+      category.setName("Iphones");
+      product.setCategory(category);
+      productRepository.save(product);
+    }
+
+    @Test
+    public void GetProductFromAwsDb() {
+        Optional<Product> productOptional = productRepository.findById(1L);
+        if(productOptional.isPresent()) {
+            System.out.println(productOptional.get().getName());
+        } else
+        {
+            System.out.println("errrror");
+        }
+    }
 
     @Test
     @Transactional
