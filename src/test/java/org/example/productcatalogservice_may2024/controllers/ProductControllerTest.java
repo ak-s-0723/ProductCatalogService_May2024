@@ -43,12 +43,12 @@ class ProductControllerTest {
         when(productService.getProductById(any(Long.class))).thenReturn(product);
 
        //Act
-        ResponseEntity<ProductDto> response = productController.getProduct(1L);
+        ProductDto response = productController.getProduct(1L);
 
         //Assert
         assertNotNull(response);
-        assertEquals("Iphone",response.getBody().getName());
-        assertEquals(1L,response.getBody().getId());
+        assertEquals("Iphone",response.getName());
+        assertEquals(1L,response.getId());
     }
 
     @DisplayName("throwing exception for product with id 1")

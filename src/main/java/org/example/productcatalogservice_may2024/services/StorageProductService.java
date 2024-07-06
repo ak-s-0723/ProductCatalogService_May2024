@@ -18,7 +18,7 @@ public class StorageProductService implements IProductService{
 
     @Override
     public List<Product> getAllProducts() {
-        return null;
+        return productRepository.findAll();
     }
 
     @Override

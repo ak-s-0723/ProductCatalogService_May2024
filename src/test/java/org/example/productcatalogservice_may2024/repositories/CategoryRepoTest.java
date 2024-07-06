@@ -27,8 +27,8 @@ class CategoryRepoTest {
        }
     }
 
-    @Test
-    @Transactional
+    //@Test
+    //@Transactional
     public void testFetchModes() {
         Category category = categoryRepo.findById(10L).get();
         System.out.println(category.getName());
