@@ -1,6 +1,8 @@
 package org.example.productcatalogservice_may2024.repositories;
 
 import org.example.productcatalogservice_may2024.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
+
+    //List<Product> findByName(String query, Pageable pageable);
+    Page<Product> findByName(String query, Pageable pageable);
     Optional<Product> findById(Long id);
 
     Product save(Product product);
