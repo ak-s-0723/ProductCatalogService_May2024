@@ -6,6 +6,7 @@ import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,17 @@ import java.util.List;
 
 
 @Service
+@Primary
 public class FakeStoreProductService implements IProductService {
 
-    @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    @Autowired
     private FakeStoreClient fakeStoreClient;
+
+    public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreAPIClient) {
+        this.restTemplateBuilder = restTemplateBuilder;
+        this.fakeStoreClient = fakeStoreAPIClient;
+    }
 
     @Override
     public List<Product> getAllProducts() {
