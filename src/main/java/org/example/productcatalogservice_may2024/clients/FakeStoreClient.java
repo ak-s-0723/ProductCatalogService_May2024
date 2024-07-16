@@ -1,6 +1,6 @@
 package org.example.productcatalogservice_may2024.clients;
 
-import org.example.productcatalogservice_may2024.dtos.FakeStoreProductDto;
+import org.example.productcatalogservice_may2024.dtos.FakeStoreClientProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpMethod;
@@ -17,9 +17,9 @@ public class FakeStoreClient {
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
 
-    public FakeStoreProductDto getProduct(Long productId) {
-        FakeStoreProductDto fakeStoreProductDto = requestForEntity(HttpMethod.GET,"http://fakestoreapi.com/products/{id}",null,FakeStoreProductDto.class,productId).getBody();
-        return fakeStoreProductDto;
+    public FakeStoreClientProductDto getProduct(Long productId) {
+        FakeStoreClientProductDto fakeStoreClientProductDto = requestForEntity(HttpMethod.GET,"http://fakestoreapi.com/products/{id}",null, FakeStoreClientProductDto.class,productId).getBody();
+        return fakeStoreClientProductDto;
     }
 
     public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {

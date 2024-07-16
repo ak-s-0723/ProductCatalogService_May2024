@@ -1,12 +1,12 @@
 package org.example.productcatalogservice_may2024.services;
 
 import org.example.productcatalogservice_may2024.clients.FakeStoreClient;
-import org.example.productcatalogservice_may2024.dtos.FakeStoreProductDto;
+import org.example.productcatalogservice_may2024.dtos.FakeStoreClientProductDto;
 import org.example.productcatalogservice_may2024.models.Category;
 import org.example.productcatalogservice_may2024.models.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,20 +27,23 @@ public class FakeStoreProductService implements IProductService {
 
     private FakeStoreClient fakeStoreClient;
 
-    public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreAPIClient) {
+    private RedisTemplate<String,Object> redisTemplate;
+
+    public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreAPIClient,RedisTemplate<String,Object> redisTemplate) {
         this.restTemplateBuilder = restTemplateBuilder;
         this.fakeStoreClient = fakeStoreAPIClient;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public List<Product> getAllProducts() {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        FakeStoreProductDto[] fakeStoreProductDtos =
+        FakeStoreClientProductDto[] fakeStoreClientProductDtos =
                 restTemplate.getForEntity("http://fakestoreapi.com/products/",
-                        FakeStoreProductDto[].class).getBody();
+                        FakeStoreClientProductDto[].class).getBody();
         List<Product> products = new ArrayList<>();
-        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
-            products.add(getProduct(fakeStoreProductDto));
+        for(FakeStoreClientProductDto fakeStoreClientProductDto : fakeStoreClientProductDtos) {
+            products.add(getProduct(fakeStoreClientProductDto));
         }
 
         return products;
@@ -48,7 +51,23 @@ public class FakeStoreProductService implements IProductService {
 
     @Override
     public Product getProductById(Long productId) {
-        return getProduct(fakeStoreClient.getProduct(productId));
+        // if product with id found in cache
+        //        return from there
+        // else make api call to fake store
+       //         cache it
+       //         return it
+
+        FakeStoreClientProductDto fakeStoreClientProductDto = null;
+        fakeStoreClientProductDto = (FakeStoreClientProductDto) redisTemplate.opsForHash().get("PRODUCTS__",productId);
+        if(fakeStoreClientProductDto != null) {
+            System.out.println("Found in Redis Cache");
+            return getProduct(fakeStoreClientProductDto);
+        }
+
+        fakeStoreClientProductDto = fakeStoreClient.getProduct(productId);
+        System.out.println("Found by calling FakeStore");
+        redisTemplate.opsForHash().put("PRODUCTS__",productId, fakeStoreClientProductDto);
+        return getProduct(fakeStoreClientProductDto);
     }
 
     @Override
@@ -58,9 +77,9 @@ public class FakeStoreProductService implements IProductService {
 
     @Override
     public Product replaceProduct(Long id, Product product) {
-        FakeStoreProductDto fakeStoreProductDto = getFakeStoreProductDto(product);
-        FakeStoreProductDto fakeStoreProductDtoResponse = requestForEntity(HttpMethod.PUT,"http://fakestoreapi.com/products/{id}",fakeStoreProductDto,FakeStoreProductDto.class,id).getBody();
-        return getProduct(fakeStoreProductDtoResponse);
+        FakeStoreClientProductDto fakeStoreClientProductDto = getFakeStoreProductDto(product);
+        FakeStoreClientProductDto fakeStoreClientProductDtoResponse = requestForEntity(HttpMethod.PUT,"http://fakestoreapi.com/products/{id}", fakeStoreClientProductDto, FakeStoreClientProductDto.class,id).getBody();
+        return getProduct(fakeStoreClientProductDtoResponse);
     }
 
     public <T> ResponseEntity<T> requestForEntity(HttpMethod httpMethod, String url, Object request, Class<T> responseType, Object... uriVariables) throws RestClientException {
@@ -71,30 +90,30 @@ public class FakeStoreProductService implements IProductService {
     }
 
 
-    private Product getProduct(FakeStoreProductDto fakeStoreProductDto) {
+    private Product getProduct(FakeStoreClientProductDto fakeStoreClientProductDto) {
         Product product = new Product();
-        product.setId(fakeStoreProductDto.getId());
-        product.setName(fakeStoreProductDto.getTitle());
-        product.setImageUrl(fakeStoreProductDto.getImage());
-        product.setPrice(fakeStoreProductDto.getPrice());
-        product.setDescription(fakeStoreProductDto.getDescription());
+        product.setId(fakeStoreClientProductDto.getId());
+        product.setName(fakeStoreClientProductDto.getTitle());
+        product.setImageUrl(fakeStoreClientProductDto.getImage());
+        product.setPrice(fakeStoreClientProductDto.getPrice());
+        product.setDescription(fakeStoreClientProductDto.getDescription());
         Category category = new Category();
-        category.setName(fakeStoreProductDto.getCategory());
+        category.setName(fakeStoreClientProductDto.getCategory());
         product.setCategory(category);
         return product;
     }
 
-    private FakeStoreProductDto getFakeStoreProductDto(Product product) {
-        FakeStoreProductDto fakeStoreProductDto = new FakeStoreProductDto();
-        fakeStoreProductDto.setId(product.getId());
-        fakeStoreProductDto.setDescription(product.getDescription());
-        fakeStoreProductDto.setPrice(product.getPrice());
-        fakeStoreProductDto.setImage(product.getImageUrl());
-        fakeStoreProductDto.setTitle(product.getName());
+    private FakeStoreClientProductDto getFakeStoreProductDto(Product product) {
+        FakeStoreClientProductDto fakeStoreClientProductDto = new FakeStoreClientProductDto();
+        fakeStoreClientProductDto.setId(product.getId());
+        fakeStoreClientProductDto.setDescription(product.getDescription());
+        fakeStoreClientProductDto.setPrice(product.getPrice());
+        fakeStoreClientProductDto.setImage(product.getImageUrl());
+        fakeStoreClientProductDto.setTitle(product.getName());
         if(product.getCategory() != null) {
-            fakeStoreProductDto.setCategory(product.getCategory().getName());
+            fakeStoreClientProductDto.setCategory(product.getCategory().getName());
         }
-        return fakeStoreProductDto;
+        return fakeStoreClientProductDto;
     }
 }
 
