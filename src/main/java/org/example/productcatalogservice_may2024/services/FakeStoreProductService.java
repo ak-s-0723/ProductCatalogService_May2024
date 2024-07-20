@@ -20,7 +20,7 @@ import java.util.List;
 
 
 @Service
-@Primary
+//@Primary
 public class FakeStoreProductService implements IProductService {
 
     private RestTemplateBuilder restTemplateBuilder;
@@ -28,6 +28,12 @@ public class FakeStoreProductService implements IProductService {
     private FakeStoreClient fakeStoreClient;
 
     private RedisTemplate<String,Object> redisTemplate;
+
+    @Override
+    public Product getProductBasedOnUserScope(Long productId,Long userId) {
+        return null;
+    }
+
 
     public FakeStoreProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreAPIClient,RedisTemplate<String,Object> redisTemplate) {
         this.restTemplateBuilder = restTemplateBuilder;

@@ -24,6 +24,18 @@ public class ProductController {
     //@Qualifier("productservicestub")
     IProductService iProductService;
 
+
+    @GetMapping("/{pid}/{uid}")
+    public ProductDto getProductBasedOnUserScope(@PathVariable Long pid,@PathVariable Long uid) {
+        Product product = iProductService.getProductBasedOnUserScope(pid,uid);
+
+        if(product == null) {
+            return null;
+        }
+
+        return getProductDto(product);
+    }
+
     @GetMapping
     public List<ProductDto> getAllProducts() {
         List<ProductDto> results = new ArrayList<>();
